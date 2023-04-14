@@ -1,0 +1,3 @@
+com\foogui\App.class
+com\foogui\config\StarterBeanAutoConfiguration.class
+com\foogui\bean\StarterBean.class
