@@ -59,7 +59,7 @@ public class RpcServer implements DisposableBean {
             log.info("服务启动成功");
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            log.info(e.getMessage());
+            e.printStackTrace();
         } finally {
             destroy();
         }

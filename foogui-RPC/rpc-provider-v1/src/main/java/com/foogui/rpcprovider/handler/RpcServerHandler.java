@@ -42,7 +42,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<String> implem
         try {
             response.setReturnValue(handle(request));
         } catch (Exception e) {
-           log.info(e.getMessage());
+            e.printStackTrace();
         }
         // 将response转成Json返回给消费端
         ctx.writeAndFlush(JSON.toJSONString(response));

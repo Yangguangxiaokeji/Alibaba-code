@@ -16,8 +16,12 @@
 
   <modules>
     <module>rpc-api</module>
-    <module>rpc-consumer</module>
-    <module>rpc-provider</module>
+    <module>rpc-consumer-v1</module>
+    <module>rpc-provider-v1</module>
+    <module>rpc-spring-boot-autoconfiguration</module>
+    <module>rpc-spring-boot-starter</module>
+    <module>rpc-provider-v2</module>
+    <module>rpc-consumer-v2</module>
   </modules>
 
   <name>foogui-RPC</name>
@@ -29,9 +33,16 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <!-- 基础工具类 -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>5.8.15</version>
     </dependency>
   </dependencies>
   <dependencyManagement>
@@ -43,12 +54,32 @@
       </dependency>
       <dependency>
         <groupId>com.foogui</groupId>
-        <artifactId>rpc-consumer</artifactId>
+        <artifactId>rpc-consumer-v1</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.foogui</groupId>
-        <artifactId>rpc-provider</artifactId>
+        <artifactId>rpc-provider-v1</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.foogui</groupId>
+        <artifactId>rpc-spring-boot-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.foogui</groupId>
+        <artifactId>rpc-spring-boot-autoconfiguration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.foogui</groupId>
+        <artifactId>rpc-provider-v2</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.foogui</groupId>
+        <artifactId>rpc-consumer-v2</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
