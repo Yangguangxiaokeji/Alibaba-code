@@ -9,21 +9,20 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class RpcClient {
     private EventLoopGroup group;
 
     private Channel channel;
 
-    private  String ip;
+    private String ip;
 
-    private  int port;
+    private int port;
 
-    private final RpcClientHandler rpcClientHandler = new RpcClientHandler();
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private  RpcClientHandler rpcClientHandler=new RpcClientHandler();
+
+
 
     public RpcClient(String ip, int port) {
         this.ip = ip;
@@ -32,14 +31,17 @@ public class RpcClient {
     }
 
     /**
-     * 初始化方法-连接Netty服务端
+     * 初始化客户端-连接Netty服务端
      */
     private void initClient() {
         group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
+                // 设置为true时，TCP协议就会定期发送空闲数据包，以保持连接的存活状态,
+                // 防止客户端被关闭
                 .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                // 设置连接超时时间
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -50,13 +52,21 @@ public class RpcClient {
                         pipeline.addLast(rpcClientHandler);
                     }
                 });
-        // 连接Netty服务端
-        try {
-            channel = bootstrap.connect(ip, port).sync().channel();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            destroy();
-        }
+        // 连接Netty服务端，ChannelFuture包含了连接的结果
+        ChannelFuture channelFuture = bootstrap.connect(ip, port);
+        // 添加监听器
+        channelFuture.addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                // 连接成功
+                channel = future.channel();
+                // TODO: 处理业务逻辑
+            } else {
+                // 连接失败
+                destroy();
+                // TODO: 处理异常
+            }
+        });
+
     }
 
     public void destroy() {
@@ -67,11 +77,11 @@ public class RpcClient {
             group.shutdownGracefully();
         }
     }
+
     /**
      * 提供消息发送的方法
      */
     public Object send(String msg) throws ExecutionException, InterruptedException {
-        rpcClientHandler.setRequestMsg(msg);
-        return executorService.submit(rpcClientHandler).get();
+        return rpcClientHandler.send(msg);
     }
 }

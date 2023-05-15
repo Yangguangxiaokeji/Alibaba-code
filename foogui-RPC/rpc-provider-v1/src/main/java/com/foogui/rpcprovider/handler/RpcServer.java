@@ -30,7 +30,7 @@ public class RpcServer implements DisposableBean {
     private NioEventLoopGroup bossGroup;
 
     /**
-     * 负责处理Channel（通道）的I/O事件
+     * 负责处理Channel（通道）的I/O请求，具体干活的
      */
     private NioEventLoopGroup workerGroup;
 
@@ -55,8 +55,10 @@ public class RpcServer implements DisposableBean {
                             pipeline.addLast(rpcServerHandler);
                         }
                     });
+            // 异步变同步，确保端口绑定成功再继续执行
             ChannelFuture channelFuture = bootstrap.bind(ip, port).sync();
             log.info("服务启动成功");
+            // closeFuture关闭动作阻塞，直到被唤醒才执行
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

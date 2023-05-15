@@ -11,13 +11,23 @@ import java.util.UUID;
 public class RpcClientProxy {
 
     public static Object createProxy(Class<?> remoteServiceClass) {
+        // 类加载器，接口Class数组
         return Proxy.newProxyInstance(RpcClientProxy.class.getClassLoader(), new Class[]{remoteServiceClass}, new InvocationHandler() {
+            /**
+             * 调用
+             *
+             * @param proxy  代理对象
+             * @param method 接口Class中的方法
+             * @param args   接口方法的参数
+             * @return {@link Object}
+             * @throws Throwable throwable
+             */
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 RpcRequest request = new RpcRequest();
                 request.setRpcRequestId(UUID.randomUUID().toString());
                 // 返回的是定义该方法的类的名称,其实就是接口的Class名
-                request.setClassName(method.getDeclaringClass().getName());
+                request.setInterfaceClassName(method.getDeclaringClass().getName());
                 // request.setClassName(remoteServiceClass.getName());
                 request.setMethodName(method.getName());
                 request.setParameterTypes(method.getParameterTypes());

@@ -1,12 +1,20 @@
 package com.foogui.rpcconsumer.handler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.springframework.stereotype.Component;
 
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
+@Component
+@ChannelHandler.Sharable
+public class RpcClientHandler extends SimpleChannelInboundHandler<String>  {
 
-public class RpcClientHandler extends SimpleChannelInboundHandler<String> implements Callable {
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    /**
+     * 上下文和其他handler和pipeline交流
+     */
     private ChannelHandlerContext context;
 
     // 发送的消息
@@ -19,6 +27,11 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<String> implem
         this.requestMsg = requestMsg;
     }
 
+    /**
+     * 通道建立起连接时调的方法
+     * @param ctx ctx
+     * @throws Exception 异常
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         context = ctx;
@@ -37,11 +50,13 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<String> implem
     /**
      * 发送消息到服务端
      */
-    @Override
-    public synchronized Object call() throws Exception {
-        // 消息发送
-        context.writeAndFlush(requestMsg);
-        //线程等待
+
+    public synchronized Object send(String msg) throws ExecutionException, InterruptedException {
+        executorService.submit(() -> {
+            // 消息发送
+            context.writeAndFlush(msg);
+        });
+        //线程等待服务端数据的返回响应
         wait();
         return responseMsg;
     }

@@ -12,9 +12,9 @@ public class RpcRequest {
      */
     private String rpcRequestId;
     /**
-     * 类名
+     * 远程访问的接口名
      */
-    private String className;
+    private String interfaceClassName;
     /**
      * 方法名
      */
