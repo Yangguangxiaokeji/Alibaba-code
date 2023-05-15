@@ -3,11 +3,11 @@ package com.foogui.rpcspringbootautoconfiguration.model;
 import lombok.Data;
 
 @Data
-public class ProviderBean {
+public class ProviderServiceBean {
     /**
      * 服务名称
      */
-    private String name;
+    private String serviceName;
     /**
      * 服务地址，格式：ip:port
      */

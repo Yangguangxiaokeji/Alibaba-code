@@ -14,6 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 客户端组
+ * NettyClientGroup 含 NettyClientBizGroup，NettyClientBizGroup 含 NettyClient
+ * @author Foogui
+ * @date 2023/05/15
+ */
 @Data
 public class NettyClientGroup implements ApplicationContextAware {
 
@@ -62,26 +68,30 @@ public class NettyClientGroup implements ApplicationContextAware {
      * 连接NettyServer
      */
     private void connectProviders() throws Exception {
-
+        // 只有当成员变量初始化完毕后才可以继续执行，避免值还没设置就去使用而导致的NPE
         if (!hasInit) {
             return;
         }
-
+        // 确保更新服务时，旧的服务都被剔除了
         providers = new HashMap<>();
+        // providerPath 是 "/rpc/provider"
         String providerPath = rpcProperties.getPath() + rpcProperties.getProviderPath();
-        List<String> provders = zkServer.getChild(providerPath);
+        // 获取服务提供者们的路径，一类一类的服务，一个服务可能对应还有很多实例
+        List<String> providerPaths = zkServer.getChild(providerPath);
 
-        for (String provderName : provders) {
+        for (String path : providerPaths) {
+            // 获取具体的服务实例的地址，因为存在集群的情况
+            List<String> providerInstancePaths = zkServer.getChild(providerPath + "/" + path);
 
-            List<String> providerInstance = zkServer.getChild(providerPath + "/" + provderName);
-
-            if (CollectionUtils.isEmpty(providerInstance)) {
+            if (CollectionUtils.isEmpty(providerInstancePaths)) {
                 continue;
             }
+            // path对应的是服务名(文件夹名),providerInstancePaths对应是具体的服务的路径
+            // 例如 rpc/provider/user,path对应就是user，user目录下还有很多实例，那么我们就可以定义这个NettyClientBizGroup
+            // 的名字是user，然后通过构造方式进行传入参数，进行进一步初始化
+            NettyClientBizGroup nettyClientBizGroup = new NettyClientBizGroup(path, providerInstancePaths);
 
-            NettyClientBizGroup nettyClientBizGroup = new NettyClientBizGroup(provderName, providerInstance);
-
-            providers.put(provderName, nettyClientBizGroup);
+            this.providers.put(path, nettyClientBizGroup);
         }
     }
 

@@ -29,7 +29,8 @@ public class RpcResponse implements Serializable {
      *
      * @return
      */
-    public static RpcResponse answerNoService() {
+
+    public static RpcResponse createResponseOfNoService() {
         RpcResponse rpcResponse = new RpcResponse();
         rpcResponse.setRpcRequestId(ConstantPool.NO_SERVICE);
         rpcResponse.setReturnValue("没有服务提供者");
@@ -40,7 +41,7 @@ public class RpcResponse implements Serializable {
      *
      * @return
      */
-    public static RpcResponse answerTimeout(String requestId) {
+    public static RpcResponse createResponseOfTimeout(String requestId) {
         RpcResponse rpcResponse = new RpcResponse();
         rpcResponse.setRpcRequestId(requestId);
         rpcResponse.setReturnValue("超时TimeOut");
@@ -51,7 +52,7 @@ public class RpcResponse implements Serializable {
      *
      * @return
      */
-    public static RpcResponse answerHeart() {
+    public static RpcResponse createResponseOfHeartBeat() {
         RpcResponse rpcResponse = new RpcResponse();
         rpcResponse.setRpcRequestId(ConstantPool.HEART_BEAT);
         return rpcResponse;

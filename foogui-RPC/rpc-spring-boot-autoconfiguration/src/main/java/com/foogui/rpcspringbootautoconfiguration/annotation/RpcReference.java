@@ -11,6 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD) // 方法注解
 @Retention(RetentionPolicy.RUNTIME) // 运行时注解
 public @interface RpcReference {
+    /**
+     * 具体引入的服务名
+     * @return {@link String}
+     */
     String value();
 }
 

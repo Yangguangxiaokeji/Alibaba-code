@@ -2,7 +2,7 @@ package com.foogui.rpcspringbootautoconfiguration.utils;
 
 import cn.hutool.json.JSONUtil;
 import com.foogui.rpcspringbootautoconfiguration.config.RpcProperties;
-import com.foogui.rpcspringbootautoconfiguration.model.ProviderBean;
+import com.foogui.rpcspringbootautoconfiguration.model.ProviderServiceBean;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.zookeeper.*;
@@ -32,11 +32,11 @@ public class ZKServer implements ApplicationContextAware {
 
     @PostConstruct
     public void init() {
-        // 初始化
+        // 连接zookeeper
         initZookeeper();
         // 在zk上创建目录
         createRpcPath();
-        // 给某个目录添加监听器
+        // 给provider目录添加监听器
         addWatcher();
     }
 
@@ -57,15 +57,6 @@ public class ZKServer implements ApplicationContextAware {
         }
     }
 
-    private void addWatcher() {
-        try {
-            String listenProviderPath = path + providerPath;
-            // 添加自定义监听器
-            zk.getChildren(listenProviderPath, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void createRpcPath() {
         try {
@@ -81,10 +72,19 @@ public class ZKServer implements ApplicationContextAware {
         }
     }
 
+    private void addWatcher() {
+        try {
+            String listenProviderPath = path + providerPath;
+            // 启动子节点的创建和删除的监听
+            zk.getChildren(listenProviderPath, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String createPathPermanent(String path, String data) throws InterruptedException, KeeperException {
         if (zk.exists(path, true) == null) {
-            String mkPath =
-                    zk.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            String mkPath = zk.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             System.out.println("Success create path: " + mkPath);
             return mkPath;
         } else {
@@ -117,9 +117,9 @@ public class ZKServer implements ApplicationContextAware {
     /**
      * 向zk注册服务提供者
      */
-    public void sendProviderBeanMsg(ProviderBean providerBean) {
+    public void sendProviderBeanMsg(ProviderServiceBean providerServiceBean) {
 
-        String s = JSONUtil.toJsonStr(providerBean);
+        String s = JSONUtil.toJsonStr(providerServiceBean);
     }
 
     /**

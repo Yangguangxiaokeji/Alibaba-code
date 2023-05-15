@@ -39,13 +39,14 @@ public class RpcServiceProxy<T> implements InvocationHandler {
         NettyClientBizGroup nettyClientBizGroup = providers.get(serviceName);
 
         if (null == nettyClientBizGroup) {
-            RpcResponse response = RpcResponse.answerNoService();
+            RpcResponse response = RpcResponse.createResponseOfNoService();
             return response.getReturnValue();
         }
+        // 每次调用方法都会调用next访问集群中的下一个服务
         NettyClient nettyClient = nettyClientBizGroup.next();
 
         if (null == nettyClient) {
-            RpcResponse response = RpcResponse.answerNoService();
+            RpcResponse response = RpcResponse.createResponseOfNoService();
             return response.getReturnValue();
         }
 
@@ -69,7 +70,7 @@ public class RpcServiceProxy<T> implements InvocationHandler {
         RpcResponse response = nettyClient.sendMessage(rpcRequest);
 
         if (response == null) {
-            response = RpcResponse.answerTimeout(rpcRequest.getRpcRequestId());
+            response = RpcResponse.createResponseOfTimeout(rpcRequest.getRpcRequestId());
         }
 
 //return JSONUtil.toBean(response.getReturnValue().toString(), method.getReturnType());

@@ -22,10 +22,16 @@ import io.netty.util.CharsetUtil;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 具体的服务
+ *
+ * @author Foogui
+ * @date 2023/05/15
+ */
 public class NettyClient {
 
     private final EventLoopGroup group = new NioEventLoopGroup();
-    private ChannelFuture f = null;
+    private ChannelFuture channelFuture = null;
 
     private final String ip;
     private final Integer port;
@@ -36,25 +42,25 @@ public class NettyClient {
     }
 
     /**
-     * 启动 Netty 客户端
+     * 异步启动 Netty 客户端
      */
-    public void start() {
+    public void startAsync() {
         new Thread(this::runClient).start();
     }
 
     public void runClient() {
         try {
             //1. 创建客户端启动助手
-            Bootstrap b = new Bootstrap();
-            //2. 设置线程组
-            b.group(group)
+            Bootstrap bootstrap = new Bootstrap();
+            //2. 设置线程组,线程组对于该客户端负责处理所有的event
+            bootstrap.group(group)
             //3.设置参数
                     .channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
                             socketChannel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
-                            // TimeClientHandler是自己定义的方法
+                            // 添加客户端对应的处理器，当有相应时由其进行处理
                             socketChannel.pipeline().addLast(new RpcClientHandler());
                             // 添加 Netty 自带心跳机制
                             // 在客户端会每隔10秒来检查一下channelRead方法被调用的情况，如果在10秒内该链上的channelRead方法都没有被触发，就会调用userEventTriggered方法。
@@ -64,9 +70,9 @@ public class NettyClient {
                         }
                     });
             //4. 启动客户端,等待连接服务端,同时将异步改为同步
-            f = b.connect(ip, port).sync();
-            //5. 关闭通道和关闭连接池
-            f.channel().closeFuture().sync();
+            channelFuture = bootstrap.connect(ip, port).sync();
+            //5. 关闭通道和关闭连接池，closeFuture会导致阻塞在这，将来channel关闭时继续执行
+            channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -74,6 +80,12 @@ public class NettyClient {
         }
     }
 
+    /**
+     * 客户端发送消息。返回响应
+     *
+     * @param msg 味精
+     * @return {@link RpcResponse}
+     */
     public RpcResponse sendMessage(RpcRequest msg) {
         // 存起来
         RpcFuture<RpcResponse> future = new RpcFuture<>();
@@ -81,9 +93,10 @@ public class NettyClient {
         RpcResponse rpcResponse = null;
         try {
             String s = JSONUtil.toJsonStr(msg);
-            f.channel().writeAndFlush(s);
-
-            rpcResponse = future.get(100000, TimeUnit.MILLISECONDS);
+            // 通过Future获得通道，然后向服务端写json
+            channelFuture.channel().writeAndFlush(s);
+            // 获取响应结果，这里会阻塞住，直到服务端返回了响应
+            rpcResponse = future.get(5000, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

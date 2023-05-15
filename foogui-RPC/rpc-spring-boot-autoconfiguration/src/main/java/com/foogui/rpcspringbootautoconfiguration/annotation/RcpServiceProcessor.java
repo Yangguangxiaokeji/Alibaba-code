@@ -29,13 +29,13 @@ public class RcpServiceProcessor
         }
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field field : declaredFields) {
-// 找出标记了InjectService注解的属性
+// 找出标记了RpcReference注解的属性
             RpcReference injectService = field.getAnnotation(RpcReference.class);
             if (injectService == null) {
                 continue;
             }
 
-// 获取服务名称
+// 获取想远程调用的服务名称
             String providerName = injectService.value();
 // 获取接口Class
             Class<?> fieldClass = field.getType();

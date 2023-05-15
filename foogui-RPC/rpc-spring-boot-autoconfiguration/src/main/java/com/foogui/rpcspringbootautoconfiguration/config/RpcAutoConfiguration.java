@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Primary;
         RpcClientProperties.class
 })
 // 如果application.yml或者properties中没有rpc.register-address属性，则此类RpcAutoConfiguration不注入IOC容器
+// 相当于start的开关
 @ConditionalOnProperty(
         prefix = "rpc",
         name = "register-address",

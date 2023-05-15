@@ -27,7 +27,7 @@ public class RcpServerHandler extends SimpleChannelInboundHandler<String> {
         // 心跳逻辑
         if (ConstantPool.HEART_BEAT.equals(requestBean.getRpcRequestId())) {
             System.out.println("服务端接收到心跳");
-            RpcResponse rpcResponse = RpcResponse.answerHeart();
+            RpcResponse rpcResponse = RpcResponse.createResponseOfHeartBeat();
             String s = JSONUtil.toJsonStr(rpcResponse);
             ctx.channel().writeAndFlush(s);
             return;
