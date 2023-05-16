@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 
 /**
  * rpc未来任务
- *
+ * 在这里，起到线程之间交互的中介类的作用，有点异步回调通知的味道
  * @author Foogui
  * @date 2023/05/15
  */

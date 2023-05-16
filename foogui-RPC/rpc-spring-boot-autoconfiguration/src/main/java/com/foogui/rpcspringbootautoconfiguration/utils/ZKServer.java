@@ -74,6 +74,7 @@ public class ZKServer implements ApplicationContextAware {
 
     private void addWatcher() {
         try {
+            // rpc/provider
             String listenProviderPath = path + providerPath;
             // 启动子节点的创建和删除的监听
             zk.getChildren(listenProviderPath, true);

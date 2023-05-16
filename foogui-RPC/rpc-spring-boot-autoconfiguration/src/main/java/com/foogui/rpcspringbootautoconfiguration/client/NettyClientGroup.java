@@ -69,6 +69,7 @@ public class NettyClientGroup implements ApplicationContextAware {
      */
     private void connectProviders() throws Exception {
         // 只有当成员变量初始化完毕后才可以继续执行，避免值还没设置就去使用而导致的NPE
+        // 实际上，ApplicationContextAware接口的回调方法会先于@PostConstruct注解的方法执行。
         if (!hasInit) {
             return;
         }
@@ -76,19 +77,21 @@ public class NettyClientGroup implements ApplicationContextAware {
         providers = new HashMap<>();
         // providerPath 是 "/rpc/provider"
         String providerPath = rpcProperties.getPath() + rpcProperties.getProviderPath();
-        // 获取服务提供者们的路径，一类一类的服务，一个服务可能对应还有很多实例
+        // 获取服务提供者们的路径，一类一类的服务，一个服务下可能对应还有很多实例
+        // 这里的providerPaths获取的是/rpc/provider下的多个文件夹的名
         List<String> providerPaths = zkServer.getChild(providerPath);
 
         for (String path : providerPaths) {
             // 获取具体的服务实例的地址，因为存在集群的情况
+            // 获取的是服务对应的文件夹下的微服务的名，
+            // 例如providerInstancePaths的值可能/rpc/provider/user下的127.0.0.1:8080
             List<String> providerInstancePaths = zkServer.getChild(providerPath + "/" + path);
-
+            // 该服务对应的文件夹没有实例，就遍历下一个服务的文件夹
             if (CollectionUtils.isEmpty(providerInstancePaths)) {
                 continue;
             }
-            // path对应的是服务名(文件夹名),providerInstancePaths对应是具体的服务的路径
-            // 例如 rpc/provider/user,path对应就是user，user目录下还有很多实例，那么我们就可以定义这个NettyClientBizGroup
-            // 的名字是user，然后通过构造方式进行传入参数，进行进一步初始化
+            // path对应的是服务名(文件夹名),providerInstancePaths对应是具体的服务的路径(ip:端口)
+            // 例如 rpc/provider/user,path对应就是user，user目录下还有很多实例
             NettyClientBizGroup nettyClientBizGroup = new NettyClientBizGroup(path, providerInstancePaths);
 
             this.providers.put(path, nettyClientBizGroup);
@@ -104,9 +107,7 @@ public class NettyClientGroup implements ApplicationContextAware {
         this.zkServer = applicationContext.getBean(ZKServer.class);
         this.rpcClientProperties = applicationContext.getBean(RpcClientProperties.class);
         this.rpcProperties = applicationContext.getBean(RpcProperties.class);
-
         this.consumerName = rpcClientProperties.getConsumerName();
-
         this.hasInit = true;
     }
 }

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 该注解用于注入远程服务
+ * 该注解用于注入远程服务，实际注入的是远程服务接口的代理类
  */
 @Target(ElementType.FIELD) // 方法注解
 @Retention(RetentionPolicy.RUNTIME) // 运行时注解

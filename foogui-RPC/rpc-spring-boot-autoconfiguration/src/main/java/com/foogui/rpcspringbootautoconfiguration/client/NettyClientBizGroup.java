@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 服务的业务组，包含了 NettyClient
+ * 微服务的业务组，包含了 NettyClient
  * 这里需要考虑轮训机制
  * @author Foogui
  * @date 2023/05/15
@@ -24,7 +24,7 @@ public class NettyClientBizGroup {
     private AtomicInteger index = new AtomicInteger(0);
 
     /**
-     * 对应的服务名
+     * 对应的微服务名
      */
     private String providerName;
 
@@ -34,15 +34,14 @@ public class NettyClientBizGroup {
     List<NettyClient> providerList = new ArrayList<>();
 
     /**
-     * key = 服务提供者ip:port
+     * key = 服务提供者 ip:port
      * value = NettyClient
      */
     Map<String, NettyClient> providerMap = new HashMap<>();
 
     /**
-     * 网
      *
-     * @param providerName       服务名
+     * @param providerName       服务名，例如 user-service
      * @param providerStringList 该服务名下对应的服务实例的路径集合(ip:host形式)
      */
     public NettyClientBizGroup(String providerName, List<String> providerStringList) {

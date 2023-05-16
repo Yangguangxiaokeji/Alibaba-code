@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Primary;
         RpcClientProperties.class
 })
 // 如果application.yml或者properties中没有rpc.register-address属性，则此类RpcAutoConfiguration不注入IOC容器
-// 相当于start的开关
+// 相当于boot-starter的start的开关
 @ConditionalOnProperty(
         prefix = "rpc",
         name = "register-address",
@@ -37,23 +37,20 @@ public class RpcAutoConfiguration {
      */
     @Bean
     public ZKServer ZKServer() {
-        ZKServer server = new ZKServer();
-        return server;
+        return new ZKServer();
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "rpc.client", name = "consumer-name", matchIfMissing = false)
     @Primary
     public Watcher rpcServiceChangeWatcher() {
-        RpcServiceChangeWatcher rpcServiceChangeWatcher = new RpcServiceChangeWatcher();
-        return rpcServiceChangeWatcher;
+        return new RpcServiceChangeWatcher();
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "rpc.server", name = "provider-name", matchIfMissing = false)
     public Watcher defaultWatcher() {
-        DefaultWatcher defaultWatcher = new DefaultWatcher();
-        return defaultWatcher;
+        return new DefaultWatcher();
     }
 
     @Bean

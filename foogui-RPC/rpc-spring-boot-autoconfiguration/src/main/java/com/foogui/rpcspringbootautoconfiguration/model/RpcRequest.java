@@ -43,7 +43,7 @@ public class RpcRequest implements Serializable {
      */
     private Object[] parameters;
 
-    public static RpcRequest sendHeart() {
+    public static RpcRequest createHeartRequest() {
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setRpcRequestId(ConstantPool.HEART_BEAT);
         return rpcRequest;

@@ -29,16 +29,17 @@ public class RpcServiceChangeWatcher implements Watcher, ApplicationContextAware
     public void process(WatchedEvent event) {
         System.out.println(event);
 
-// 实际业务
+        // 实际业务
         try {
             nettyClientGroup.refreshProviders();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-// 重新监听
+        // 重新监听
         String providersPath = rpcProperties.getPath() + rpcProperties.getProviderPath();
         try {
+            // 监听整个 rpc/provider下所有的服务
             zkServer.getZk().getChildren(providersPath, true);
         } catch (Exception e) {
             e.printStackTrace();

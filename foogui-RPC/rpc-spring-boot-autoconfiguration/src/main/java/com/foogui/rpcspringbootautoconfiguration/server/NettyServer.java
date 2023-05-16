@@ -47,7 +47,7 @@ public class NettyServer implements ApplicationContextAware {
     }
 
     private void doRegister() {
-        // getBean可以获取不被容器接管的Bean?
+        // getBean可以获取不被容器接管的Bean
         ZKServer zkServer = applicationContext.getBean(ZKServer.class);
         RpcServerProperties rpcServerProperties = applicationContext.getBean(RpcServerProperties.class);
         RpcProperties rpcProperties = applicationContext.getBean(RpcProperties.class);
@@ -66,7 +66,7 @@ public class NettyServer implements ApplicationContextAware {
         try {
             String providerAddress = InetAddress.getLocalHost().getHostAddress();
             String providerInstance = providerAddress + ":" + rpcServerProperties.getProviderPort();
-        // key(path) = /rpc/provider/myProviderName/127.0.0.1:8080 value:127.0.0.1:8080
+        // key(path) = /rpc/provider/myProviderName/127.0.0.1:9527 value:127.0.0.1:9527
             zkServer.createPathTemp(providerGroupDir + "/" + providerInstance, providerInstance);
         } catch (Exception e) {
             e.printStackTrace();

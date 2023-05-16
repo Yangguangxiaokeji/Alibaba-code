@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 具体的服务
+ * 具体的微服务实例
  *
  * @author Foogui
  * @date 2023/05/15
@@ -62,10 +62,9 @@ public class NettyClient {
                             socketChannel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                             // 添加客户端对应的处理器，当有相应时由其进行处理
                             socketChannel.pipeline().addLast(new RpcClientHandler());
-                            // 添加 Netty 自带心跳机制
-                            // 在客户端会每隔10秒来检查一下channelRead方法被调用的情况，如果在10秒内该链上的channelRead方法都没有被触发，就会调用userEventTriggered方法。
+                            // 添加 Netty 自带心跳机制，如果连接空闲状态的时间超过10秒就会触发对应的处理器
                             socketChannel.pipeline().addLast(new IdleStateHandler(10, 10, 10, TimeUnit.SECONDS));
-                            // 添加心跳机制触发器
+                            // 自定义处理器，心跳机制触发时会调用IdleStateTriggerHandler的userEventTriggered方法
                             socketChannel.pipeline().addLast(new IdleStateTriggerHandler());
                         }
                     });
