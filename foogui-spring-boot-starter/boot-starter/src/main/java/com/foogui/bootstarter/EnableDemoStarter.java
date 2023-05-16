@@ -1,6 +1,7 @@
-package com.foogui;
+package com.foogui.bootstarter;
 
-import com.foogui.config.ConfigMarker;
+
+import com.foogui.bootstarter.config.AutoMarker;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -10,6 +11,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({ConfigMarker.class})
-public @interface EnableStarterBeanRegister {
+@Import({AutoMarker.class})
+public @interface EnableDemoStarter {
 }
