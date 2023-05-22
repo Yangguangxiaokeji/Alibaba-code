@@ -1,6 +1,7 @@
 package com.foogui.bootstarter.config;
 
 import com.foogui.bootstarter.bean.DemoStarter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,6 +14,9 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnBean(AutoMarker.class)
 @ConditionalOnProperty(name = "open", havingValue = "true", matchIfMissing = true)
 public class DemoStarterAutoConfiguration {
+
+    @Autowired
+    private DemoStarterProperties demoStarterProperties;
 
     static {
         System.out.println("StarterBeanAutoConfiguration init....");
