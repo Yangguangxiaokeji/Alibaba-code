@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foogui.boot.skeleton.modules.user.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.foogui.boot.skeleton.modules.user.domain.UserPO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="age" jdbcType="TINYINT" property="age" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, password, email, age, phone, created, modified, creator, operator, 
+    deleted, version
+  </sql>
+
+</mapper>

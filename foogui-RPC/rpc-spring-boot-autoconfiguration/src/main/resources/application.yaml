@@ -1,0 +1,6 @@
+# boot 2.6以上的版本不建议循环依赖的出现，循环依赖默认禁止，需要手动开启
+# 循环依赖的两个Bean如果都加了@Data注解就会出现otString()无限调用的问题
+spring:
+  main:
+    allow-circular-references: true
+
