@@ -1,6 +1,7 @@
 package com.foogui.boot.skeleton.modules.user.controller;
 
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.foogui.boot.skeleton.common.domain.PageQuery;
 import com.foogui.boot.skeleton.common.domain.PageResult;
 import com.foogui.boot.skeleton.common.domain.Result;
@@ -43,6 +44,7 @@ public class UserController {
 
     @Cacheable(cacheNames = "users-cache", key = "#userDTO.phone")
     @PostMapping
+    @DS("slave_1")
     public Result save(@RequestBody UserDTO userDTO) {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(userDTO,userPO);

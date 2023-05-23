@@ -2,6 +2,20 @@ server:
   port: 9999
 spring:
   datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3308/alibaba-code?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+          username: root
+          password: root
+        slave_1:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3308/alibaba-code-slave?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone =Asia/Shanghai
+          username: root
+          password: root
     type: com.alibaba.druid.pool.DruidDataSource  # 指定数据源类型
     ########## 连接池 配置 ##########
     druid:
@@ -69,20 +83,7 @@ spring:
         login-password: 123
         allow: 127.0.0.1           # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
         deny:                                        # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
-    dynamic:
-      primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
-      datasource:
-        master:
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3308/alibaba-code?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
-          username: root
-          password: root
-        slave_1:
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3308/alibaba-code-slave?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone =Asia/Shanghai
-          username: root
-          password: root
+
 
 #  cache:
 #    type: caffeine
@@ -92,7 +93,9 @@ spring:
 #      spec: maximumSize=1024,refreshAfterWrite=60s
 
 mybatis-plus:
+  mapper-locations: mybatis/mapper/*.xml
   configuration:
+    map-underscore-to-camel-case: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   # 支持统配符 * 或者 ; 分割
