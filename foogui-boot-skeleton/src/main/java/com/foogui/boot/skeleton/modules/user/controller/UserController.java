@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,7 @@ public class UserController {
     @PostMapping("/cache")
     public Result testCache(@RequestBody UserDTO userDTO) {
         System.out.println("没有走缓存");
+        List<String> list = new ArrayList<>();
         return Result.success();
 
 

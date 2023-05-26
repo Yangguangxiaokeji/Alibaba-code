@@ -1,0 +1,13 @@
+<configuration>
+
+    <dataSource>
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="jdbcUrl"
+                  value="jdbc:mysql://localhost:3308/source-code?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
+    </dataSource>
+    <!--存放的是mapper.xml所在的路径-->
+    <mapper resource="UserMapper.xml"></mapper>
+
+</configuration>

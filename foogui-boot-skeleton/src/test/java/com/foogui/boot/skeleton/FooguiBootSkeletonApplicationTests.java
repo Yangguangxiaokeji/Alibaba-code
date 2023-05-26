@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 @SpringBootTest
 class FooguiBootSkeletonApplicationTests {
@@ -63,4 +64,21 @@ class FooguiBootSkeletonApplicationTests {
     public void delete() {
         userMapper.deleteById(8);
     }
+
+    @Test
+    public void test() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("1", "1");
+        map.put("2", "2");
+        map.put("3", "3");
+        map.replaceAll((k, v) -> {
+            if (v.equals("1")) {
+                return "";
+            }
+            return v;
+        });
+        System.out.println(map);
+    }
+
+
 }

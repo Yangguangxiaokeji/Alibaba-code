@@ -1,0 +1,16 @@
+<mapper namespace="com.foogui.mybatistest.mapper.UserMapper">
+
+    <!--sql的唯一标识：namespace.id来组成 ： statementId-->
+    <select id="selectList" resultType="com.foogui.mybatistest.po.User" parameterType="com.foogui.mybatistest.po.User">
+        select * from user
+    </select>
+
+    <select id="selectOne" resultType="com.foogui.mybatistest.po.User" parameterType="com.foogui.mybatistest.po.User">
+        select * from user where id = #{id} and username = #{username}
+    </select>
+
+    <insert id="insert" resultType="int" parameterType="com.foogui.mybatistest.po.User">
+        insert into user(username) values(#{username})
+    </insert>
+
+</mapper>
